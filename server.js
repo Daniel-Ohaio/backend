@@ -41,9 +41,21 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
+
+  // возвращаем содержимое data.txt
+  if (pathname === '/api/data' && req.method === 'GET') {
+    fs.readFile(DATA_FILE, 'utf8', (err, content) => {
+      if (err && err.code !== 'ENOENT') {
+        return send(res, 500, 'Не удалось прочитать data.txt', 'text/plain; charset=utf-8');
+      }
+      console.log('Запрос на чтение data.txt. Содержимое отправлено');
+      send(res, 200, err ? '' : content, 'text/plain; charset=utf-8');
+    });
+    return;
+  }
   send(res, 404, { error: 'Маршрут не найден' });
+
 });
 server.listen(PORT, () => {
-  console.log(`Backend v1.0 запущен: http://localhost:${PORT}`);
+  console.log(`Backend v2.0 запущен: http://localhost:${PORT}`);
 });
-
